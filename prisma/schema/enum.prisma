@@ -1,0 +1,10 @@
+enum CREDENTIAL_PROVIDER {
+    GOOGLE
+    EMAIL
+}
+
+enum Role {
+    ADMIN
+    CUSTOMER
+    SELLER
+}
