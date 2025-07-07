@@ -1,3 +1,5 @@
+import { User } from '@prisma/client';
+
 export class RequestContext {
   public requestID: string | undefined;
 
@@ -5,5 +7,5 @@ export class RequestContext {
 
   public ip: string | undefined;
 
-  public user: unknown;
+  public user: User | null;
 }

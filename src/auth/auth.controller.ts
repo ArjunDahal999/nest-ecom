@@ -1,17 +1,26 @@
-import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
 import { RequestContext } from 'src/shared/request-context/request-context.dto';
 import { ReqContext } from 'src/shared/request-context/request-context.decorator';
 import { GenerateMagicLinkDto } from './dto/auth-generate-magic-link.dto';
+import { LocalGuard } from './guards/local.guard';
+import { RefreshTokenAuthGuard } from './guards/refresh-token.guard';
+import { RefreshPayload } from './config/payload';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @UseGuards(AuthGuard('local'))
+  @UseGuards(LocalGuard)
   @Post('login')
-  async login(
+  login(
     @Request()
     req: Express.Request & {
       user: {
@@ -19,13 +28,13 @@ export class AuthController {
       };
     },
   ) {
-    return await this.authService.signIn({
+    return this.authService.signIn({
       email: req.user.email,
     });
   }
 
   @Post('generate-magic-link')
-  async generateMagicLink(
+  generateMagicLink(
     @ReqContext() ctx: RequestContext,
     @Body() body: GenerateMagicLinkDto,
   ) {
@@ -33,6 +42,18 @@ export class AuthController {
       ctx,
       email: body.email,
       role: body.role,
+    });
+  }
+
+  @UseGuards(RefreshTokenAuthGuard)
+  @Get('generate-access-token')
+  generateAccessToken(
+    @ReqContext() ctx: RequestContext,
+    @Request() req: Express.Request & { user: RefreshPayload },
+  ) {
+    return this.authService.generateAccessToken({
+      ctx,
+      userId: req.user.sub,
     });
   }
 }

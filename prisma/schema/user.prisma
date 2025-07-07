@@ -1,10 +1,10 @@
 model User {
-    id        String    @id @default(cuid())
-    email     String    @unique
-    createdAt DateTime  @default(now()) @db.Timestamptz(6)
-    updatedAt DateTime  @updatedAt
-    Role      Role      @default(CUSTOMER)
-    account   Account?
+    id        String              @id @default(cuid())
+    email     String              @unique
+    createdAt DateTime            @default(now()) @db.Timestamptz(6)
+    updatedAt DateTime            @updatedAt
+    Role      Role                @default(CUSTOMER)
+    provider  CREDENTIAL_PROVIDER @default(EMAIL)
     session   Session?
     profile   Profile?
     deletedAt DateTime?

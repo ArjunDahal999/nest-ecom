@@ -25,8 +25,11 @@ export class UserService {
       data: {
         Role: createUserDto.role,
         email: createUserDto.email,
+        provider: createUserDto.credentialProvider,
       },
     });
+
+    this.logger.log(ctx, `User created with email: ${user.email}`);
     return user;
   }
 
@@ -34,10 +37,19 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  async findOne(email: string) {
+  async findOneWithEmail(email: string) {
     return this.prismaService.user.findUnique({
       where: {
         email: email,
+      },
+    });
+  }
+
+  async findOneById(id: string) {
+    console.log(`Finding user with ID: ${id}`);
+    return await this.prismaService.user.findUnique({
+      where: {
+        id: id,
       },
     });
   }

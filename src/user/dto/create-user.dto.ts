@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Role } from '@prisma/client';
+import { CREDENTIAL_PROVIDER, Role } from '@prisma/client';
 import { IsEmail, IsEnum, IsNotEmpty, MaxLength } from 'class-validator';
 
 export class CreateUserDto {
@@ -17,4 +17,13 @@ export class CreateUserDto {
     message: `role must be a valid enum value: ${Object.values(Role).join(', ')}`,
   })
   role: Role;
+
+  @ApiProperty({
+    enum: CREDENTIAL_PROVIDER,
+    description: 'Credential provider',
+    default: CREDENTIAL_PROVIDER.EMAIL,
+  })
+  @IsNotEmpty()
+  @IsEnum(CREDENTIAL_PROVIDER)
+  credentialProvider: CREDENTIAL_PROVIDER;
 }

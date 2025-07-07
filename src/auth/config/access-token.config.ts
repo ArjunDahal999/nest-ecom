@@ -1,12 +1,14 @@
 import { registerAs } from '@nestjs/config';
 import { JwtModuleOptions } from '@nestjs/jwt';
+import * as fs from 'fs';
 
 export default registerAs(
   'jwt.config',
   (): JwtModuleOptions => ({
-    secret: process.env.JWT_ACCESS_TOKEN || 'defaultSecret',
+    publicKey: fs.readFileSync('./cert/access-token.public.key'),
+    privateKey: fs.readFileSync('./cert/access-token.private.key'),
     signOptions: {
-      expiresIn: 36000, // 1 hour
+      algorithm: 'RS256',
     },
   }),
 );
